@@ -77,10 +77,6 @@
       .get('https://opentdb.com/api_token.php?command=request')
       .then(response => (this.token = response.data.token))
 
-      await axios
-      .get(`https://opentdb.com/api.php?amount=10&token=${this.token}`)
-      .then(response => (this.questions = response.data.results))
-
       this.fetchData()
     },
     methods: {
@@ -165,32 +161,22 @@
           }
         }, 1000)
       },
-      getRandomQuestions (array, count) {
-        let length = array.length
-        let randomIndexes = []
-        let randomItems = []
-        let index, item
+      async getNewQuestion () {
+        let question
+        await axios
+        .get(`https://opentdb.com/api.php?amount=1&token=${this.token}`)
+        .then(response => (question = response.data.results[0]))
 
-        count = count | 1
+        let correctAnswer = question.correct_answer
+        let incorrectAnswers = question.incorrect_answers
+        incorrectAnswers.push(correctAnswer)
+        let options = this.shuffle(incorrectAnswers)
 
-        while (count) {
-          index = Math.floor(Math.random() * length)
-          if (randomIndexes.indexOf(index) === -1) {
-            count--
-            randomIndexes.push(index)
-          }
-        }
-
-        randomIndexes.forEach((index) => {
-          item = array.slice(index, index + 1).pop()
-          randomItems.push(item)
-        })
-
-        if (randomItems.length === 1) {
-          return randomItems.pop()
-        } else {
-          return randomItems
-        }
+        this.question = question
+        this.options = options
+        this.correctanswer = question.correct_answer
+        this.hasAnswered = false
+        this.isCorrect = false
       },
       // Knuth Shuffle -> https://github.com/coolaj86/knuth-shuffle
       shuffle (array) {
@@ -213,19 +199,6 @@
         }
 
         return array
-      },
-      getNewQuestion () {
-        let question = this.getRandomQuestions(this.questions, 1)
-        let correctAnswer = question.correct_answer
-        let incorrectAnswers = question.incorrect_answers
-        incorrectAnswers.push(correctAnswer)
-        let options = this.shuffle(incorrectAnswers)
-
-        this.question = question
-        this.options = options
-        this.correctanswer = question.correct_answer
-        this.hasAnswered = false
-        this.isCorrect = false
       }
     }
   }
