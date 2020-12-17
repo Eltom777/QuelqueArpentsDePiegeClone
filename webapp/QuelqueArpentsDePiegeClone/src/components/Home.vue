@@ -9,10 +9,10 @@
     </div>
     <div class="play" v-if="secondplayer">
       <div>
-        <div class="container hamilton--header--text">
+        <div class="container QuelqueArpents--header--text">
           <h1>Quelque Arpents De Pièges</h1>
 
-          <div class="columns hamilton--inner">
+          <div class="columns QuelqueArpents--inner">
             <div class="column is-half left">
               <p class="title">User 1</p>
               <p class="subtitle">Total Score: {{playerdata.one.score}}</p>
@@ -23,10 +23,10 @@
             </div>
           </div>
 
-          <div class="hamilton--lyrics--text">
+          <div class="QuelqueArpents--question--text">
             <p>{{question.question}}
             </p>
-            <div class="hamilton--answers">
+            <div class="QuelqueArpents--answers">
               <a v-bind:class="{ 'wronganswer': hasAnswered && !isCorrect, 'correctanswer': hasAnswered && isCorrect}" @click="checkAnswer(item)" v-for="(item, index) in options">{{item}}</a>
             </div>
           </div>
@@ -283,29 +283,29 @@
     transform: translateY(-1px);
     box-shadow: 0 7px 14px rgba(50,50,93,.1), 0 3px 6px rgba(0,0,0,.08);
   }
-  .hamilton--header--text {
+  .QuelqueArpents--header--text {
     margin-top: 50px;
   }
-  .hamilton--inner {
+  .QuelqueArpents--inner {
     margin-top: 20px;
   }
-  .hamilton--inner .left{
+  .QuelqueArpents--inner .left{
     text-align: left;
   }
-  .hamilton--inner .right{
+  .QuelqueArpents--inner .right{
     text-align: right;
   }
   .title {
     font-weight: bold;
   }
-  .hamilton--lyrics--text {
+  .QuelqueArpents--question--text {
     width: 600px;
     margin: 0 auto;
   }
-  .hamilton--lyrics--text p {
+  .QuelqueArpents--question--text p {
     font-weight: bold;
   }
-  .hamilton--answers a{
+  .QuelqueArpents--answers a{
     display: block;
     border: 3px solid white;
     border-radius: 50px;
