@@ -24,7 +24,7 @@
           </div>
 
           <div class="QuelqueArpents--question--text">
-            <p>{{question.question}}
+            <p>{{this.ReplaceCharacters(question.question.replace('&quot;', '"'))}}
             </p>
             <div class="QuelqueArpents--answers">
               <a v-bind:class="{ 'wronganswer': hasAnswered && !isCorrect, 'correctanswer': hasAnswered && isCorrect}" @click="checkAnswer(item)" v-for="(item, index) in options">{{item}}</a>
@@ -199,6 +199,9 @@
         }
 
         return array
+      },
+      ReplaceCharacters (inputString) {
+        return inputString.replace(/&quot;/g, '"').replace(/<[^>]+>/g, '').replace(/&#39;/g, "'").replace(/&#32;/g, ' ').replace(/&eacute;/g, 'é').replace(/&rsquo;/g, "'").replace(/&#039;/g, "'")
       }
     }
   }
