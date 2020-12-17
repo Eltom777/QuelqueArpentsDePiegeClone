@@ -2,17 +2,17 @@
   <transition name="fade">
     <div class="home" v-if="!secondplayer">
       <div class="inner">
-        <h1>Do you know your Hamilton Lyrics?</h1>
-        <p>Test your knowledge of Hamilton: An American Musical by guessing who sang what lyric.</p>
-        <p>Invite a second player by sending them this link {{url}}.</p>
+        <h1>Quelque Arpents de Pièges Clone</h1>
+        <p>Avez-vous les connaissances requises pour survoler ces questions ?</p>
+        <p>Inviter un ami avec ce lien: {{url}}.</p>
       </div>
     </div>
     <div class="play" v-if="secondplayer">
       <div>
-        <div class="container hamilton--header--text">
-          <h1>Do you know your Hamilton Lyrics?</h1>
+        <div class="container QuelqueArpents--header--text">
+          <h1>Quelque Arpents De Pièges</h1>
 
-          <div class="columns hamilton--inner">
+          <div class="columns QuelqueArpents--inner">
             <div class="column is-half left">
               <p class="title">User 1</p>
               <p class="subtitle">Total Score: {{playerdata.one.score}}</p>
@@ -23,11 +23,11 @@
             </div>
           </div>
 
-          <div class="hamilton--lyrics--text">
-            <p>{{question.lyric}}
+          <div class="QuelqueArpents--question--text">
+            <p>{{this.ReplaceCharacters(question.question.replace('&quot;', '"'))}}
             </p>
-            <div class="hamilton--answers">
-              <a v-bind:class="{ 'wronganswer': hasAnswered && !item.correct, 'correctanswer': hasAnswered && item.correct}" @click="checkAnswer(item)" v-for="(item, index) in options">{{item.name}}</a>
+            <div class="QuelqueArpents--answers">
+              <a v-bind:class="{ 'wronganswer': hasAnswered && !isCorrect, 'correctanswer': hasAnswered && isCorrect}" @click="checkAnswer(item)" v-for="(item, index) in options">{{item}}</a>
             </div>
           </div>
         </div>
@@ -38,119 +38,17 @@
 
 <script>
   import ChannelDetails from '@/components/ChannelDetails'
-  const lyrics = [
-    {
-      lyric: 'When he was ten his father split, full of it, debt-ridden. Two years later, see Alex and his mother bed-ridden. Half-dead sittin\' in their own sick, the scent thick',
-      options: [{name: 'Aaron Burr', correct: false}, {name: 'James Madison', correct: false}, {name: 'John Laurens', correct: false}, {name: 'Eliza Hamilton', correct: true}],
-      answer: 'Eliza Hamilton'
-    },
-    {
-      lyric: 'I am sailing off to London. I’m accompanied by someone who always pays. I have found a wealthy husband. Who will keep me in comfort for all my days. He is not a lot of fun, but there’s no one',
-      options: [{name: 'Eliza', correct: false}, {name: 'Peggy', correct: false}, {name: 'Angelica', correct: true}, {name: 'Maria', correct: false}],
-      answer: 'Angelica'
-    },
-    {
-      lyric: 'Lord, show me how to. Say no to this. I don’t know how to. Say no to this',
-      options: [{name: 'Alexander Hamilton', correct: true}, {name: 'Thomas Jefferson', correct: false}, {name: 'John Laurens', correct: false}, {name: 'James Madison', correct: false}],
-      answer: 'Alexander Hamilton'
-    },
-    {
-      lyric: 'And y’all look pretty good in ya’ frocks. How ‘bout when I get back, we all strip down to our socks?',
-      options: [{name: 'Philip Hamilton', correct: true}, {name: 'George Eacker', correct: false}, {name: 'John Adams', correct: false}, {name: 'John Adams', correct: false}],
-      answer: 'Philip Hamilton'
-    },
-    {
-      lyric: 'And when you said “Hi,” I forgot my dang name',
-      options: [{name: 'Maria', correct: false}, {name: 'Eliza', correct: false}, {name: 'Peggy', correct: false}, {name: 'Angelica', correct: true}],
-      answer: 'Angelica'
-    },
-    {
-      lyric: 'Thank you for all your service',
-      options: [{name: 'Eliza', correct: true}, {name: 'Maria', correct: false}, {name: 'Peggy', correct: false}, {name: 'Angelica', correct: false}],
-      answer: 'Eliza'
-    },
-    {
-      lyric: 'And I’m never gonna stop until I make ‘em. Drop and burn ‘em up and scatter their remains, I’m',
-      options: [{ name: 'Lafayette', correct: true }, { name: 'Laurens', correct: false }, { name: 'Eacker', correct: false }, {name: 'Adams', correct: false}],
-      answer: 'Lafayette'
-    },
-    {
-      lyric: 'Yeah, you know what? We can change that. You know why?',
-      options: [{name: 'Jefferson', correct: true}, {name: 'Maria', correct: false}, {name: 'Peggy', correct: false}, {name: 'Angelica', correct: false}],
-      answer: 'Jefferson'
-    },
-    {
-      lyric: 'I survived, but I paid for it',
-      options: [{name: 'Aaron Burr', correct: true}, {name: 'James Madison', correct: false}, {name: 'George Washington', correct: false}, {name: 'King George', correct: false}],
-      answer: 'Aaron Burr'
-    },
-    {
-      lyric: 'When you knock me down I get the fuck back up again!',
-      options: [{name: 'Burr', correct: false}, {name: 'Lafayette', correct: false}, {name: 'Mulligan', correct: true}, {name: 'Laurens', correct: false}],
-      answer: 'Mulligan'
-    },
-    {
-      lyric: 'Why so sad? Remember we made an arrangement when you went away.Now you’re making me mad',
-      options: [{name: 'Peggy Schuyler', correct: false}, {name: 'King George', correct: true}, {name: 'Eliza Hamilton', correct: false}, {name: 'Angelica Schuyler', correct: false}],
-      answer: 'King George'
-    },
-    {
-      lyric: 'It’s bad enough daddy wants to go to war',
-      options: [{name: 'Peggy Schuyler', correct: true}, {name: 'King George', correct: false}, {name: 'Angelica Schuyler', correct: false}, {name: 'Eliza Hamilton', correct: false}],
-      answer: 'Peggy Schuyler'
-    },
-    {
-      lyric: 'When I was given my first command. I led my men straight into a massacre',
-      options: [{name: 'John Adams', correct: false}, {name: 'James Madison', correct: false}, {name: 'John Laurens', correct: false}, {name: 'George Washington', correct: true}],
-      answer: 'George Washington'
-    },
-    {
-      lyric: 'Black and white soldiers wonder alike if this really means freedom',
-      options: [{name: 'Burr', correct: false}, {name: 'Lafayette', correct: false}, {name: 'Mulligan', correct: false}, {name: 'Laurens', correct: true}],
-      answer: 'Laurens'
-    },
-    {
-      lyric: 'We lower our guns as he frantically waves a white handkerchief',
-      options: [{name: 'Lafayette', correct: true}, {name: 'Burr', correct: false}, {name: 'Mulligan', correct: false}, {name: 'Laurens', correct: false}],
-      answer: 'Lafayette'
-    },
-    {
-      lyric: 'And so the American experiment begins. With my friends all scattered to the winds',
-      options: [{name: 'Hamilton', correct: true}, {name: 'Lafayette', correct: false}, {name: 'Mulligan', correct: false}, {name: 'Laurens', correct: false}],
-      answer: 'Hamilton'
-    },
-    {
-      lyric: 'We will fight up close, seize the moment and stay in it. It’s either that or meet the business end of a bayonet. The code word is ‘Rochambeau,’ dig me?',
-      options: [{name: 'Hamilton', correct: true}, {name: 'Lafayette', correct: false}, {name: 'Mulligan', correct: false}, {name: 'Jefferson', correct: false}],
-      answer: 'Hamilton'
-    },
-    {
-      lyric: 'An immigrant you know and love who’s unafraid to step in!',
-      options: [{name: 'Burr', correct: true}, {name: 'Laurens', correct: false}, {name: 'Washington', correct: false}, {name: 'Mulligan', correct: false}],
-      answer: 'Burr'
-    },
-    {
-      lyric: 'I’m a trust fund, baby, you can trust me!',
-      options: [{name: 'Burr', correct: true}, {name: 'Lafayette', correct: false}, {name: 'George', correct: false}, {name: 'Laurens', correct: false}],
-      answer: 'Burr'
-    },
-    {
-      lyric: 'You want a revolution? I want a revelation',
-      options: [{name: 'Angelica', correct: true}, {name: 'Eliza', correct: false}, {name: 'Mulligan', correct: false}, {name: 'Laurens', correct: false}],
-      answer: 'Angelica'
-    },
-    {
-      lyric: 'You punched the bursar',
-      options: [{name: 'Lafayette', correct: false}, {name: 'Peggy', correct: false}, {name: 'Laurens', correct: false}, {name: 'Burr', correct: true}],
-      answer: 'Burr'
-    }
-  ]
+  import axios from 'axios'
+
   export default {
     name: 'home',
     data () {
       return {
+        token: null,
         presenceid: null,
+        questions: null,
         hasAnswered: false,
+        isCorrect: true,
         question: null,
         options: null,
         correctanswer: null,
@@ -173,7 +71,12 @@
         url: null
       }
     },
-    created () {
+    async created () {
+      // get game token
+      await axios
+      .get('https://opentdb.com/api_token.php?command=request')
+      .then(response => (this.token = response.data.token))
+
       this.fetchData()
     },
     methods: {
@@ -232,7 +135,10 @@
       checkAnswer (item) {
         let channel = ChannelDetails.subscribeToPusher()
         this.hasAnswered = true
-        if (item.name === this.correctanswer) {
+        console.log(item)
+        console.log(this.correctanswer)
+        if (item === this.correctanswer) {
+          this.isCorrect = true
           if (this.userid === 1) {
             this.playerdata.one.score += 10
           } else if (this.userid === 2) {
@@ -255,42 +161,50 @@
           }
         }, 1000)
       },
-      getRandomQuestions (array, count) {
-        let length = array.length
-        let randomIndexes = []
-        let randomItems = []
-        let index, item
+      async getNewQuestion () {
+        let question
+        await axios
+        .get(`https://opentdb.com/api.php?amount=1&token=${this.token}`)
+        .then(response => (question = response.data.results[0]))
 
-        count = count | 1
+        let correctAnswer = question.correct_answer
+        let incorrectAnswers = question.incorrect_answers
+        incorrectAnswers.push(correctAnswer)
+        let options = this.shuffle(incorrectAnswers)
 
-        while (count) {
-          index = Math.floor(Math.random() * length)
-          if (randomIndexes.indexOf(index) === -1) {
-            count--
-            randomIndexes.push(index)
-          }
-        }
-
-        randomIndexes.forEach((index) => {
-          item = array.slice(index, index + 1).pop()
-          randomItems.push(item)
-        })
-
-        if (randomItems.length === 1) {
-          return randomItems.pop()
-        } else {
-          return randomItems
-        }
-      },
-      getNewQuestion () {
-        let question = this.getRandomQuestions(lyrics, 1)
         this.question = question
-        this.options = question.options
-        this.correctanswer = question.answer
+        this.options = options
+        this.correctanswer = question.correct_answer
         this.hasAnswered = false
+        this.isCorrect = false
+      },
+      // Knuth Shuffle -> https://github.com/coolaj86/knuth-shuffle
+      shuffle (array) {
+        console.log(array)
+        var currentIndex = array.length
+        let temporaryValue
+        let randomIndex
+
+        // While there remain elements to shuffle...
+        while (currentIndex !== 0) {
+          // Pick a remaining element...
+          randomIndex = Math.floor(Math.random() * currentIndex)
+          console.log(currentIndex)
+          currentIndex -= 1
+
+          // And swap it with the current element.
+          temporaryValue = array[currentIndex]
+          array[currentIndex] = array[randomIndex]
+          array[randomIndex] = temporaryValue
+        }
+
+        return array
+      },
+      ReplaceCharacters (inputString) {
+        return inputString.replace(/&quot;/g, '"').replace(/<[^>]+>/g, '').replace(/&#39;/g, "'").replace(/&#32;/g, ' ').replace(/&eacute;/g, 'é').replace(/&rsquo;/g, "'").replace(/&#039;/g, "'")
       }
     }
-}
+  }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -372,29 +286,29 @@
     transform: translateY(-1px);
     box-shadow: 0 7px 14px rgba(50,50,93,.1), 0 3px 6px rgba(0,0,0,.08);
   }
-  .hamilton--header--text {
+  .QuelqueArpents--header--text {
     margin-top: 50px;
   }
-  .hamilton--inner {
+  .QuelqueArpents--inner {
     margin-top: 20px;
   }
-  .hamilton--inner .left{
+  .QuelqueArpents--inner .left{
     text-align: left;
   }
-  .hamilton--inner .right{
+  .QuelqueArpents--inner .right{
     text-align: right;
   }
   .title {
     font-weight: bold;
   }
-  .hamilton--lyrics--text {
+  .QuelqueArpents--question--text {
     width: 600px;
     margin: 0 auto;
   }
-  .hamilton--lyrics--text p {
+  .QuelqueArpents--question--text p {
     font-weight: bold;
   }
-  .hamilton--answers a{
+  .QuelqueArpents--answers a{
     display: block;
     border: 3px solid white;
     border-radius: 50px;
